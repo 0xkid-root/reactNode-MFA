@@ -5,6 +5,11 @@ import dotenv from "dotenv";
 import passport from "passport";
 import {DBConnect} from "./config/dbConnect.js"
 
+
+//routes imporet 
+
+import authRoutes from "./routes/authRoutes.js"
+
 const app  = express();
 const PORT = 9000;
 dotenv.config();
@@ -30,6 +35,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use("/api/auth",authRoutes);
 
 
 
