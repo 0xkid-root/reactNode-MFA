@@ -8,6 +8,7 @@ This project implements a complete 2FA/MFA solution with a React frontend and No
 .
 ├── Backend/
 │   ├── package.json
+│   ├── .env
 │   └── [Other backend files]
 └── Frontend/
     ├── package.json
@@ -61,15 +62,16 @@ This project implements a complete 2FA/MFA solution with a React frontend and No
 
 3. Create a `.env` file with the following variables:
    ```env
-   PORT=3000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
+   CONNECTION_STRING=mongodb://localhost:27017/twofa
+   SESSION_SECRET=your_strong_session_secret_here
    ```
 
 4. Start the server:
    ```bash
    npm start
    ```
+   
+   The backend server will run on port 9000.
 
 ### Frontend Setup
 
@@ -87,28 +89,38 @@ This project implements a complete 2FA/MFA solution with a React frontend and No
    ```bash
    npm run dev
    ```
+   
+   The frontend development server will run on port 3000.
 
 ## API Endpoints
 
-- `POST /api/register` - User registration
-- `POST /api/login` - User login
-- `POST /api/2fa/setup` - Initiate 2FA setup
-- `POST /api/2fa/verify` - Verify 2FA token
-- `POST /api/2fa/disable` - Disable 2FA for user
+### Authentication Routes (`/api/auth`)
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login (with Passport.js local strategy)
+- `GET /api/auth/authstatus` - Check authentication status
+- `GET /api/auth/logout` - User logout
+
+### 2FA Routes (`/api/auth/2fa`)
+
+- `POST /api/auth/2fa/setup` - Initiate 2FA setup
+- `POST /api/auth/2fa/verify` - Verify 2FA token
+- `POST /api/auth/2fa/reset` - Reset 2FA for user
 
 ## Usage
 
-1. Register a new user account
-2. Log in with your credentials
-3. Set up 2FA by scanning the QR code with your authenticator app
-4. Enter the generated code to verify and enable 2FA
-5. On subsequent logins, you'll need to provide both password and 2FA code
+1. Register a new user account using the `/api/auth/register` endpoint
+2. Log in with your credentials using the `/api/auth/login` endpoint
+3. Set up 2FA by making a request to `/api/auth/2fa/setup` to generate a QR code
+4. Scan the QR code with your authenticator app (Google Authenticator, Authy, etc.)
+5. Verify the 2FA setup by sending the generated code to `/api/auth/2fa/verify`
+6. On subsequent logins, you'll need to provide both password and 2FA code
 
 ## Security Considerations
 
 - All passwords are hashed using bcrypt
-- JWT tokens are used for secure session management
-- 2FA secrets are stored securely
+- Session management using express-session and passport.js
+- 2FA secrets are stored securely in the database
 - CORS is enabled for controlled cross-origin requests
 
 ## Contributing
