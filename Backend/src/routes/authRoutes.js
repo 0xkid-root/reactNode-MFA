@@ -17,15 +17,30 @@ router.get("/authstatus",authStatus)
 router.get("/logout",logout)
 
 //2fa setup
-router.post("/2fa/setup", setup2FA)
+router.post("/2fa/setup",
+(req,res,next)=>{
+    if(req.isAuthenticated()) return next();
+    res.status(401).json({message:"Unauthorized access!"})
+},
+ setup2FA)
 
 //2fa verify route 
 
-router.post("/2fa/verify", verify2FA)
+router.post("/2fa/verify",
+    (req,res,next)=>{
+    if(req.isAuthenticated()) return next();
+    res.status(401).json({message:"Unauthorized access!"})
+},
+    verify2FA)
 
 //reset route is here:---
 
-router.post("/2fa/reset",reset2FA)
+router.post("/2fa/reset",
+    (req,res,next)=>{
+    if(req.isAuthenticated()) return next();
+    res.status(401).json({message:"Unauthorized access!"})
+},
+    reset2FA)
 
 export default router;
 

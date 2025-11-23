@@ -1,5 +1,8 @@
 import bcrypt from "bcryptjs"
 import User from "../models/user.js"
+import speakeasy from "speakeasy";
+import qrCode from "qrcode";
+import jwt from "jsonwebtoken";
 
 
 
@@ -78,6 +81,19 @@ export const logout = async()=>{
 
 }
 export const setup2FA = async()=>{
+    try{
+        console.log("the req.user is :::",req.user);
+        const user = req.user;
+        var secret = speakeasy.generateSecret();
+        console.log("speakeasy secreat is here:",secret);
+        user.twoFactorAuthSecret = secret.base32;
+        user.isMfaActive = true;
+        await user.save();
+        const url = speakeasy.otpauthURL
+
+    }catch(error){
+        return res.status(500).json({error:"Error setting up 2fa",message:error})
+    }
 
 }
 export const verify2FA = async()=>{
