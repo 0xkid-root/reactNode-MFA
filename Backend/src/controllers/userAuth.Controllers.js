@@ -86,7 +86,7 @@ export const setup2FA = async()=>{
         const user = req.user;
         var secret = speakeasy.generateSecret();
         console.log("speakeasy secreat is here:",secret);
-        user.twoFactorAuthSecret = secret.base32;
+        user.twoFactorSecret = secret.base32;
         user.isMfaActive = true;
         await user.save();
         const url = speakeasy.otpauthURL({
@@ -109,9 +109,36 @@ export const setup2FA = async()=>{
 
 }
 export const verify2FA = async()=>{
+    const {token} = req.body;
+    const user = req.user;
+
+    const verified = speakeasy.totp.verify({
+        secret:user.twoFactorSecret,
+        encoding:"base32",
+        token,
+    })
+
+    if(verified){
+        const jwtToken = jwt.sign(
+            {username:user.username},
+            process.env.JWT_SECRET,
+            {
+                expiresIn:"1hr"
+            }
+        );
+        return res.status(200).json({message:"2FA Successful!!",token:jwtToken});
+
+    }else{
+        return res.status(400).json({message:"Invalid 2FA token!"})
+    }
 
 }
 export const reset2FA = async()=>{
+    try{
+
+    }catch(Error){
+        return 
+    }
 
 }
 export const getUser = async()=>{
