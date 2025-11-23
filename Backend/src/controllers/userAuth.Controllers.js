@@ -89,7 +89,19 @@ export const setup2FA = async()=>{
         user.twoFactorAuthSecret = secret.base32;
         user.isMfaActive = true;
         await user.save();
-        const url = speakeasy.otpauthURL
+        const url = speakeasy.otpauthURL({
+            secret:secret.base32,
+            label:`${req.user.username}`,
+            issuer:"www.binance.com",
+            encoding:"base32",
+        })
+        const qrImageUrl = qrCode.toDataURL(url);
+        return res.status(200).json({
+            secret:secret.base32,
+            url:url,
+            qrCode:qrImageUrl
+        })
+
 
     }catch(error){
         return res.status(500).json({error:"Error setting up 2fa",message:error})
