@@ -35,13 +35,46 @@ export const register = async()=>{
     }
 
 }
-export const login = async()=>{
+export const login = async(req,res)=>{
+    try{
+        console.log("the auth status",req.user)
+        res.status(200).json({
+            message:"User logged in success!",
+            username:req.user.username,
+            isMfaActive:req.user.isMfaActive
+        })
+
+        
+    }catch(error){
+        reset2FA.status(500).json({
+            error:"Error logging in",
+            message:error
+        })
+    }
 
 }
-export const authStatus = async()=>{
+export const authStatus = async(req,res)=>{
+    if(req.user){
+        return res.status(200).json({
+            message:"User logged in success!",
+            username:req.user.username,
+            isMfaActive:req.user.isMfaActive
+        })
+    }else{
+        return res.status(200).json({
+            message:"Unauthorized access!",
+        })
+    }
 
 }
 export const logout = async()=>{
+    if(!req.user) res.status(401).json({message:"Unauthorized access!"})
+
+    req.logout((err)=>{
+        if(err) return res.status(400).json({message:"user not logout"});
+        res.status(200).json({message:"Logout Success!"});
+
+    })
 
 }
 export const setup2FA = async()=>{
