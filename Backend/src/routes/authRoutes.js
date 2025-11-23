@@ -10,7 +10,7 @@ const router = Router();
 router.post("/register",register)
 
 //login
-router.post("/login",login)
+router.post("/login",passport.authenticate("local"),login)
 //auth status
 router.get("/authstatus",authStatus)
 //logout routes
