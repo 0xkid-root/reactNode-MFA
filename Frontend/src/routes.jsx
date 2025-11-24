@@ -4,6 +4,7 @@ import Error from "./pages/Error";
 import Homepage from "./pages/Homepage";
 import Setup2FA from "./pages/Setup2FA";
 import Verify2FA from "./pages/Verify2FA";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
@@ -13,7 +14,12 @@ export const router = createBrowserRouter([
         element:<LoginPage/>,
         errorElement:<Error/>
     },
+
     {
+        element:<ProtectedRoute/>,
+        children:[
+
+                {
         path:"/",
         element:<Homepage/>,
         errorElement:<Error/>
@@ -28,4 +34,9 @@ export const router = createBrowserRouter([
         element:<Verify2FA/>,
         errorElement:<Error/>
     }
+        ]
+    },
+
+
+
 ])
