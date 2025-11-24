@@ -2,6 +2,8 @@
 
 This project implements a complete 2FA/MFA solution with a React frontend and Node.js/Express backend.
 
+![Project Demo](image.png)
+
 ## Project Structure
 
 ```
@@ -93,8 +95,6 @@ This project implements a complete 2FA/MFA solution with a React frontend and No
    The frontend development server will run on port 3000.
 
 ## API Endpoints
-
-![alt text](image.png)
 
 ### Authentication Routes (`/api/auth`)
 
