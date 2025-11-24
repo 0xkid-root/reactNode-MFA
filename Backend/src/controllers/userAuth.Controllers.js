@@ -135,9 +135,14 @@ export const verify2FA = async()=>{
 }
 export const reset2FA = async()=>{
     try{
+        const user = req.user;
+        user.twoFactorSecret = "";
+        user.isMfaActive = false;
+        await user.save();
+        res.status(200).json({message:"2FA reset successful!"});
 
     }catch(Error){
-        return 
+        return res.status(500).json({error:"Error resetting 2fa",message:error})
     }
 
 }
