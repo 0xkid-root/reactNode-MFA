@@ -94,6 +94,8 @@ This project implements a complete 2FA/MFA solution with a React frontend and No
 
 ## API Endpoints
 
+![alt text](image.png)
+
 ### Authentication Routes (`/api/auth`)
 
 - `POST /api/auth/register` - User registration
