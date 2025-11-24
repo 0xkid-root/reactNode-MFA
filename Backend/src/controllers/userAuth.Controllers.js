@@ -5,9 +5,7 @@ import qrCode from "qrcode";
 import jwt from "jsonwebtoken";
 
 
-
-
-export const register = async()=>{
+export const register = async(req,res)=>{
     try{
         const {username,password} = req.body
 
@@ -31,9 +29,9 @@ export const register = async()=>{
         })
 
     }catch(error){
-        reset2FA.status(500).json({
+        return res.status(500).json({
             error:"Error Registering user",
-            message:error
+            message:error.message
         })
     }
 
@@ -49,9 +47,9 @@ export const login = async(req,res)=>{
 
         
     }catch(error){
-        reset2FA.status(500).json({
+        return res.status(500).json({
             error:"Error logging in",
-            message:error
+            message:error.message
         })
     }
 
@@ -70,8 +68,8 @@ export const authStatus = async(req,res)=>{
     }
 
 }
-export const logout = async()=>{
-    if(!req.user) res.status(401).json({message:"Unauthorized access!"})
+export const logout = async(req,res)=>{
+    if(!req.user) return res.status(401).json({message:"Unauthorized access!"})
 
     req.logout((err)=>{
         if(err) return res.status(400).json({message:"user not logout"});
@@ -80,7 +78,7 @@ export const logout = async()=>{
     })
 
 }
-export const setup2FA = async()=>{
+export const setup2FA = async(req,res)=>{
     try{
         console.log("the req.user is :::",req.user);
         const user = req.user;
@@ -95,7 +93,7 @@ export const setup2FA = async()=>{
             issuer:"www.binance.com",
             encoding:"base32",
         })
-        const qrImageUrl = qrCode.toDataURL(url);
+        const qrImageUrl = await qrCode.toDataURL(url);
         return res.status(200).json({
             secret:secret.base32,
             url:url,
@@ -104,36 +102,40 @@ export const setup2FA = async()=>{
 
 
     }catch(error){
-        return res.status(500).json({error:"Error setting up 2fa",message:error})
+        return res.status(500).json({error:"Error setting up 2fa",message:error.message})
     }
 
 }
-export const verify2FA = async()=>{
-    const {token} = req.body;
-    const user = req.user;
+export const verify2FA = async(req,res)=>{
+    try{
+        const {token} = req.body;
+        const user = req.user;
 
-    const verified = speakeasy.totp.verify({
-        secret:user.twoFactorSecret,
-        encoding:"base32",
-        token,
-    })
+        const verified = speakeasy.totp.verify({
+            secret:user.twoFactorSecret,
+            encoding:"base32",
+            token,
+        })
 
-    if(verified){
-        const jwtToken = jwt.sign(
-            {username:user.username},
-            process.env.JWT_SECRET,
-            {
-                expiresIn:"1hr"
-            }
-        );
-        return res.status(200).json({message:"2FA Successful!!",token:jwtToken});
+        if(verified){
+            const jwtToken = jwt.sign(
+                {username:user.username},
+                process.env.JWT_SECRET,
+                {
+                    expiresIn:"1hr"
+                }
+            );
+            return res.status(200).json({message:"2FA Successful!!",token:jwtToken});
 
-    }else{
-        return res.status(400).json({message:"Invalid 2FA token!"})
+        }else{
+            return res.status(400).json({message:"Invalid 2FA token!"})
+        }
+    }catch(error){
+        return res.status(500).json({error:"Error verifying 2fa",message:error.message})
     }
 
 }
-export const reset2FA = async()=>{
+export const reset2FA = async(req,res)=>{
     try{
         const user = req.user;
         user.twoFactorSecret = "";
@@ -141,11 +143,16 @@ export const reset2FA = async()=>{
         await user.save();
         res.status(200).json({message:"2FA reset successful!"});
 
-    }catch(Error){
-        return res.status(500).json({error:"Error resetting 2fa",message:error})
+    }catch(error){
+        return res.status(500).json({error:"Error resetting 2fa",message:error.message})
     }
 
 }
-export const getUser = async()=>{
-
+export const getUser = async(req,res)=>{
+    try{
+        const user = req.user;
+        res.status(200).json({user});
+    }catch(error){
+        return res.status(500).json({error:"Error fetching user",message:error.message})
+    }
 }

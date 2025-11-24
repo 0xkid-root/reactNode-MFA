@@ -14,18 +14,17 @@ export const loginUser = async(username,password)=>{
     },
     {
         withCredentials:true,
-    }
-);
+    });
 };
 
 export const authStatus = async()=>{
-    return await api.get("/auth/status",{
+    return await api.get("/auth/authstatus",{
         withCredentials:true,
     });
 };
 
 export const logoutUser = async()=>{
-    return await api.post("/auth/logout",{
+    return await api.get("/auth/logout",{
         withCredentials:true,
     });
 };
@@ -50,12 +49,10 @@ export const verify2FA = async(token)=>{
 
 
 export const reset2FA = async()=>{
-    return await api.post("auth/2fa/reset",
+    return await api.post("/auth/2fa/reset",
         {},
         {
             withCredentials:true,
         }
     );
 };
-
-

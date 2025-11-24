@@ -18,8 +18,9 @@ dotenv.config();
 DBConnect();
 
 const corsOptions = {
-    origin:["http://localhost:3000"],
-    Credential:true,
+    origin: ["http://localhost:5173"],
+    credentials: true,
+    optionsSuccessStatus: 200
 }
 
 app.use(cors(corsOptions));
@@ -31,6 +32,8 @@ app.use(session({
     saveUninitialized: false,
     cookie:{
         maxAge:60000*60,
+        httpOnly: true,
+        secure: false
     }
 }))
 
