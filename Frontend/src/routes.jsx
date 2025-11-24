@@ -1,0 +1,31 @@
+import { createBrowserRouter } from "react-router-dom";
+import  LoginPage  from "./pages/LoginPage";
+import Error from "./pages/Error";
+import Homepage from "./pages/Homepage";
+import Setup2FA from "./pages/Setup2FA";
+import Verify2FA from "./pages/Verify2FA";
+
+
+
+export const router = createBrowserRouter([
+    {
+        path:"/login",
+        element:<LoginPage/>,
+        errorElement:<Error/>
+    },
+    {
+        path:"/",
+        element:<Homepage/>,
+        errorElement:<Error/>
+    },
+    {
+        path:"/setup-2fa",
+        element:<Setup2FA/>,
+        errorElement:<Error/>
+    },
+    {
+        path:"/verify-2fa",
+        element:<Verify2FA/>,
+        errorElement:<Error/>
+    }
+])
