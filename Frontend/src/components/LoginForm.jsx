@@ -22,6 +22,8 @@ const LoginForm = ()=>{
             setMessage(data.message);
             setUsername("");
             setPassword("");
+            setConfirmPassword("");
+            setMessage("");
             
         }catch(error){
             console.log("something error",error);
@@ -35,13 +37,30 @@ const LoginForm = ()=>{
         try{
             const {data} = await loginUser(username,password);
             console.log("login data is here:",data);
+            setMessage(data.message);
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
             // Handle successful login here
         }catch(error){
             console.log("error is here:",error);
+            setUsername("");
+            setPassword("");
             setError("Invalid username or password");
         }
     }
 
+    const handleRegisterToggle = async()=>{
+        try{
+            setIsRegister(!isRegister);
+            setError("");
+            setMessage("");
+
+        }catch(error){
+            console.log(error);
+        }
+
+    }
 
     return (
 
@@ -86,7 +105,7 @@ const LoginForm = ()=>{
                 <div>
                     <p className="pt-4 text-center text-gray-600 text-sm">
                         {
-                            isRegister ? "Already have an account" : "Don't have an account?"} {" "} <Link to="" onClick={()=>setIsRegister(!isRegister)}>{isRegister ? "Login" :"create Account"}</Link>
+                            isRegister ? "Already have an account" : "Don't have an account?"} {" "} <Link to="" onClick={handleRegisterToggle}>{isRegister ? "Login" :"create Account"}</Link>
                         
                         
                         
