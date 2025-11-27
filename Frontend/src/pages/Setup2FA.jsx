@@ -1,8 +1,9 @@
- const Setup2FA = ()=>{
+import TwoFaSetup from "../components/TwoFaSetup"
+
+const Setup2FA = ()=>{
     return (
-        <div>
-            Login Page
-        </div>
+    <TwoFaSetup/>
+
     )
 }
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { register, loginUser } from "../service/authApi"
 
-const LoginForm = ()=>{
+const LoginForm = ({onLoginSuccess})=>{
 
     const [isRegister,setIsRegister] = useState(false);
     const [username ,setUsername]= useState("");
@@ -40,12 +40,14 @@ const LoginForm = ()=>{
             setMessage(data.message);
             setUsername("");
             setPassword("");
-            setConfirmPassword("");
+            onLoginSuccess(data);
+            
             // Handle successful login here
         }catch(error){
             console.log("error is here:",error);
             setUsername("");
             setPassword("");
+            setMessage("");
             setError("Invalid username or password");
         }
     }
