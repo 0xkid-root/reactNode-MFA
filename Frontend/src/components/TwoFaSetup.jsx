@@ -1,4 +1,27 @@
-const TwoFaSetup = () => {
+import { useEffect, useState } from "react";
+import {setup2FA} from "../service/authApi";
+
+const TwoFaSetup = ({onSetupComplete}) => {
+  const [response,setResponse] = useState({});
+  const [message,setMessage] = useState("");
+
+  const fetchQRCode = async()=>{
+    const {data} = await setup2FA();
+    setResponse(data);
+  }
+  useEffect(()=>{
+    fetchQRCode();
+
+  },[]);
+
+  const copyClipBoard = async () => {
+    await  navigator.clipboard.writeText(response.secret);
+    setMessage("Secret copied to clipboard!");
+
+  };
+
+
+
   return (
     <div className="bg-white rounded-lg w-full shadow-md max-w-sm mx-auto">
       <div className="pt-6">
@@ -13,7 +36,7 @@ const TwoFaSetup = () => {
 
       <div className="p-6">
         <div className="flex justify-center">
-          <img src="" alt="2FA image!" className="mb-4 border rounded-md" />
+          <img src={response.qrCode} alt="2FA image!" className="mb-4 border rounded-md" />
         </div>
 
         <div className="flex-flex-center mt-3 mb-3">
@@ -31,9 +54,13 @@ const TwoFaSetup = () => {
         </div>
 
         <div className="mb-6">
-          <input type="text" />
+          {message && <p className="text-green-500 text-sm mb-2">{message}</p>}
+          <input type="text" readOnly defaultValue="" value={response.secret} className="w-full border rounded mt-2 text-xs text-gray-600 p-4" 
+           onClick={copyClipBoard}/>
 
         </div>
+
+        <button onClick={onSetupComplete} className="w-full bg-blue-500 text-white py-2 rounded-md">Continue to Verification</button>
 
       </div>
 
