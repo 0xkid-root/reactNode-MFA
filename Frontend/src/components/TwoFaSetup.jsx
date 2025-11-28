@@ -5,12 +5,24 @@ const TwoFaSetup = ({ onSetupComplete }) => {
   const [response, setResponse] = useState({});
   const [message, setMessage] = useState("");
 
-  const fetchQRCode = async () => {
-    const { data } = await setup2FA();
-    setResponse(data);
-  };
   useEffect(() => {
+    let mounted = true;
+
+    const fetchQRCode = async () => {
+      try {
+        const { data } = await setup2FA();
+        if (mounted) setResponse(data);
+      } catch (err) {
+        // log error; don't update state if component unmounted
+        console.error("Failed to fetch 2FA QR code", err);
+      }
+    };
+
     fetchQRCode();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const copyClipBoard = async () => {

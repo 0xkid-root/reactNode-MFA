@@ -1,24 +1,23 @@
-import { useState,createContext,useContext,useEffect } from "react";
+import { useState, createContext, useContext } from "react";
 
 const SessionContext = createContext();
 
 export const useSession =()=>useContext(SessionContext);
 
 export const SessionProvider = ({children})=>{
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user,setUser] = useState(null);
-    const [loading,setLoading] = useState(true);
-
-
-    useEffect(()=>{
-        const storedUser = JSON.parse(sessionStorage.getItem("user"));
-        console.log("Stored user from sessionStorage:", storedUser);
-        if(storedUser){
-         setUser(storedUser);
-        setIsLoggedIn(true);
+    const initialUser = (() => {
+        try {
+            const raw = sessionStorage.getItem("user");
+            return raw ? JSON.parse(raw) : null;
+        } catch (err) {
+            console.error("Failed to parse stored user", err);
+            return null;
         }
-        setLoading(false);
-    },[])
+    })();
+
+    const [user, setUser] = useState(initialUser);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!initialUser);
+    const loading = false;
 
     const login = (userData)=>{
         setIsLoggedIn(true);
