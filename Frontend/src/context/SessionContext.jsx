@@ -7,6 +7,7 @@ export const useSession =()=>useContext(SessionContext);
 export const SessionProvider = ({children})=>{
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user,setUser] = useState(null);
+    const [loading,setLoading] = useState(true);
 
 
     useEffect(()=>{
@@ -14,10 +15,10 @@ export const SessionProvider = ({children})=>{
         console.log("Stored user from sessionStorage:", storedUser);
         if(storedUser){
          setUser(storedUser);
-
-            setIsLoggedIn(true);
+        setIsLoggedIn(true);
         }
-    })
+        setLoading(false);
+    },[])
 
     const login = (userData)=>{
         setIsLoggedIn(true);
@@ -34,7 +35,7 @@ export const SessionProvider = ({children})=>{
     }
     return (
         <SessionContext.Provider 
-        value={{isLoggedIn, user, login, logout}}>
+        value={{isLoggedIn,loading, user, login, logout}}>
             {children}
         </SessionContext.Provider>
     )

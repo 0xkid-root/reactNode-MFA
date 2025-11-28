@@ -1,7 +1,7 @@
  const Verify2FA = ()=>{
     return (
         <div>
-            Login Page
+            verify twofa
         </div>
     )
 }
